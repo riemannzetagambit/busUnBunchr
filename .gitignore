@@ -17,3 +17,10 @@ sf_businesses.csv
 temp.py
 testing.txt
 nextbus_one_day_sf_muni_dump.csv
+all_muni_routes_distance_dists.png
+all_muni_routes_distance_dists_normed.png
+google_maps_api/
+tmp_dump.txt
+write_nextbus_data_to_sql.py
+list_of_muni_routes.npy
+muni_route_distance_distributions/

@@ -68,10 +68,7 @@
 
 	<div class="container">
 		<h1>Optimizing transit for </h1>
-		<!--
 		<form action="/app" method="GET">
-			--!>
-		<div>
 			<!--
 			<ul class="input-list">
 				<li><input id="start" name="start" placeholder="e.g." type="text" value="81 Blair St, San Francisco"></li>
@@ -82,8 +79,8 @@
 				<br>
           		<input type="text" id="ending_location" name="ending_location" placeholder="ending location">
 				<br>
-        	<button id="explore" class="btn btn-lg">Go!</button>
-		</div>
+        	<button id="explore" type="submit" class="btn btn-lg">Go!</button>
+		</form>
 	</div>
 
 
@@ -134,17 +131,6 @@
 	$(document).ready(function(){
         $('#starting_location').geocomplete();
         $('#ending_location').geocomplete();
-
-		$('#explore').click(function() {
-			$('#starting_location').val("hey");
-			var starting_loc = $('#starting_location').val();
-
-			$.post('/app', {'start': starting_loc},
-				function(data){
-					console.log(data);
-					$('#ending_location').val(data.results);
-					});
-			});
       });
     </script>
 <!--

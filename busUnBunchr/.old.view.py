@@ -1,3 +1,18 @@
+import flask
+from flask import render_template
+#from flask import request
+from busUnBunchr import app
+from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
+import pandas as pd
+import psycopg2
+
+#from bunch_predictor import probability_of_bunching
+#from get_upcoming_vehicle_info import subsequent_bus_info
+###############################################
+# define functions
+###############################################
+
 # General
 import datetime
 
@@ -11,10 +26,13 @@ from math import radians, cos, sin, asin, sqrt
 from scipy import stats
 import pandas as pd
 import numpy as np
+import patsy, pickle
+
 
 
 # Grab json from Google Maps API
-def get_googlemaps_json(start_loc, end_loc):
+#def get_googlemaps_json(start_loc, end_loc):
+def my_func(start_loc, end_loc):
     print 'in get_googlemaps_json start_loc is '+str(start_loc)
     print 'in get_googlemaps_json end_loc is '+str(end_loc)
     my_googlemaps_auth = 'AIzaSyDWQv6WWQptI-6rjbavkoZ1TpVZhHKOm4w'
@@ -53,20 +71,14 @@ def compute_distance_percentile(route_num, lat1, lon1, lat2, lon2):
 
 ######################################################################
 # Main function to get next two buses' data and return a dataframe entry with that information
-# BREAK THIS FUNCTION UP TO HANDLE ALL THE EXCEPTIONS IT CAN THROW
-# BUT DO THAT ONCE EVERYTHING ELSE IS WORKING
 ######################################################################
 def subsequent_bus_info(starting_loc, ending_loc):
-	data = get_googlemaps_json(starting_loc, ending_loc)
+	data = my_func(starting_loc, ending_loc)
 	'''Returns a dataframe that is a pair of subsequent buses
 	   and their distance percentile score
 	'''
 
 	# Get route name, (lat,lon), and stop name from Google maps
-	# For now this only gets the first transit option
-	# To look at the other transit options, you can iterate over the 'legs' key 
-	# (or maybe 'routes, figure that out)
-	# Do that last
 	steps = data['routes'][0]['legs'][0]['steps']
 	for i, step in enumerate(steps):
 		if step['travel_mode'] == 'TRANSIT':
@@ -88,10 +100,7 @@ def subsequent_bus_info(starting_loc, ending_loc):
 			stop_name = str(bus_stop.attr('title'))
 			stop_lat = round(float(bus_stop.attr('lat')),5)
 			stop_lon = round(float(bus_stop.attr('lon')),5)
-			# Matching on name is not robust because Google will occasionally return different names from NextBus
-			# So match only on coordinates
-			#if stop_name == departure_stop and stop_lat == departure_lat and stop_lon == departure_lon:
-			if stop_lat == departure_lat and stop_lon == departure_lon:
+			if stop_name == departure_stop and stop_lat == departure_lat and stop_lon == departure_lon:
 				stop_id = str(bus_stop.attr('stopId'))
 
 	# Get next two vehicle from Nextbus 'predictions'	
@@ -136,3 +145,68 @@ def subsequent_bus_info(starting_loc, ending_loc):
 #		return bus_pair
 #	else:
 #		return 'check your input'
+
+
+def probability_of_bunching(bus_pair):
+	# A formula from patsy/dmatrices so we can feed into our RF classifier
+	# Input format is expected for dataframe coming in from get_bus_info function
+	formula_for_realtime = 'bunched ~ time.dt.hour + time.dt.minute + lat_x + lon_x + speed_x  + lat_y + lon_y + speed_y + dist_percentile'
+
+	# xtmp will be a single dataframe entry that we can feed into the RF classifier
+	ytmp, xtmp = patsy.dmatrices(formula_for_realtime, data=bus_pair, return_type='dataframe')
+
+	with open('rf_fit_2016_01_21.pkl','rb') as input:
+		forest = pickle.load(input)
+
+	prediction = forest.predict_proba(xtmp)
+	# output is an array, first entry is 
+	# p, probability that it is classified as bunching
+	# second is 1 - p
+	return prediction[0][0]
+#	if fromUser != 'Default':
+#		# output is an array, first entry is 
+#		# p, probability that it is classified as bunching
+#		# second is 1 - p
+#		return prediction[0][0]
+#	else:
+#		return 'check your input'
+
+
+@app.route('/')
+@app.route('/input')
+def index():
+	return render_template("input.html")
+
+@app.route('/app')
+def read_in_directions():
+	start = flask.request.args.get('starting_location')
+	end = flask.request.args.get('ending_location')
+	print 'start is '+str(start)
+	print 'end is '+str(end)
+	# Get dataframe of next bus info 
+	df_next_bus_pair = subsequent_bus_info(str(start), str(end))
+	print df_next_bus_pair.head()
+	#tmp = my_func('51 Blair Terrace', '24th St BART Station')
+
+	route_1 = df_next_bus_pair['route_x'][0]
+	
+	expected_arrival_1 = df_next_bus_pair['arrival_x'][0]
+	expected_arrival_2 = df_next_bus_pair['arrival_y'][0]
+
+	position1 = [0,0]
+	position2 = [0,0]
+	position1[0] = df_next_bus_pair['lat_x'][0]
+	position1[1] = df_next_bus_pair['lon_x'][0]
+	position2[0] = df_next_bus_pair['lat_y'][0]
+	position2[1] = df_next_bus_pair['lon_y'][0]
+
+	prediction = probability_of_bunching(df_next_bus_pair)
+
+	return render_template('output.html', \
+			starting_loc = start, ending_loc = end, \
+			route_1 = route_1, \
+			expected_arrival_1 = expected_arrival_1, \
+			expected_arrival_2 = expected_arrival_2, \
+			position1 = position1, \
+			position2 = position2, \
+			prediction = prediction)

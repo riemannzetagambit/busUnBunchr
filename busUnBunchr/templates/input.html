@@ -67,23 +67,14 @@
 	<br><br>
 
 	<div class="container">
-		<h1>Optimizing transit for </h1>
-		<!--
-		<form action="/app" method="GET">
-			--!>
-		<div>
-			<!--
-			<ul class="input-list">
-				<li><input id="start" name="start" placeholder="e.g." type="text" value="81 Blair St, San Francisco"></li>
-				<li><input id="end" name="end" placeholder="e.g." type="text" value="22nd St Caltrain Station, San Francisco"></li>
-			</ul>
-			--!>
-          		<input type="text" id="starting_location" name="starting_location" placeholder="starting location">
-				<br>
-          		<input type="text" id="ending_location" name="ending_location" placeholder="ending location">
-				<br>
-        	<button id="explore" class="btn btn-lg">Go!</button>
-		</div>
+		<h1>Optimizing transit for the SF Muni system</h1>
+	</div>
+	<div class="container">
+   		<input type="text" id="starting_location" name="starting_location" placeholder="starting location">
+		<br>
+   		<input type="text" id="ending_location" name="ending_location" placeholder="ending location">
+		<br>
+       	<button id="explore" class="btn btn-lg">Go!</button>
 	</div>
 
 
@@ -114,7 +105,6 @@
 		var position = [37.762718, -122.448161];
 		var myOptions = {
             zoom: 13,
-            streetViewControl: true,
             scaleControl: true,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
@@ -136,50 +126,39 @@
         $('#ending_location').geocomplete();
 
 		$('#explore').click(function() {
-			$('#starting_location').val("hey");
+			//$('#starting_location').val("hey");
 			var starting_loc = $('#starting_location').val();
+			var ending_loc = $('#ending_location').val();
 
-			$.post('/app', {'start': starting_loc},
+			$.post('/app', {'start': starting_loc, 'end': ending_loc},
 				function(data){
 					console.log(data);
-					$('#ending_location').val(data.results);
+					var prediction = data.prediction;
+					console.log(prediction)
+					var route_1 = data.route_1;
+					console.log(route_1)
+
+					// delete if the element exists so we reset the thing
+					if($('#bunching_results').length){
+						$('#bunching_results').remove();
+						}
+					// what to display based on prediction value
+					if(prediction > 0.75){
+						$('#bunching_results').append("<div id='bunching_results' class='container'><p>The next vehicle serving your stop is from the route "+route_1+" with prediction =.</p>");
+						$('#bunching_results').append("<p style='color: red;'>The next bus is likely (approximately "+prediction+"% chance) to have heavy passenger loads. If possible, take the subsequent bus.</p></div>");
+					}
+					else if(prediction > 0.5 && prediction <= 0.75){
+						$('#bunching_results').append("<div id='bunching_results' class='container'><p>The next vehicle serving your stop is from the route "+route_1+" with prediction =.</p>");
+						$('#bunching_results').append("<p style='color: orange;'>The next bus has a moderate probability (approximately"+prediction+"%chance) of being delayed by excessive passenger load. Consider taking the subsequent bus.</p></div>");
+					}
+					else{
+						$('#bunching_results').append("<div id='bunching_results' class='container'><p>The next vehicle serving your stop is from the route "+route_1+" with prediction =.</p>");
+						$('#bunching_results').append("<p style='color: green;'>This route is running smoothly.</p></div>");
+					}
 					});
 			});
       });
     </script>
-<!--
-    <script type="text/javascript">
-      $(document).ready(function(){
-        $('#address1').geocomplete();
-        $('#address2').geocomplete();
-
-        var map = createMap(37.7577,-122.4376, 12);
-        var route = L.polyline([]).addTo(map);
-        var markers = L.markerClusterGroup([]).addTo(map);
-
-        $('form').on('submit', function(e){
-            e.preventDefault();
-            map.spin(true);
-            $.ajax({
-              type: "POST",
-              cache: false,
-              url: $(this).attr('action'),
-              data: $(this).serialize(),
-              success: function(data) {
-                map.spin(false);
-                $('#status').html(data.message);
-                if (data.success) {
-                  map.removeLayer(route);
-                  map.removeLayer(markers);
-                  route = addRoute(map, data.latlngs);
-                  markers = addClusters(map, data.clusters);
-                }
-              }
-            });
-        });
-      });
-    </script>
---!>
   </body>
 </html>
 

@@ -20,3 +20,7 @@ body {
 .class {
 	opacity: 1.0;
 }
+
+.container {
+	width: min-content;
+}

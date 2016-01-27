@@ -20,11 +20,9 @@ def input():
 def read_in_directions():
 	if flask.request.method == 'POST':
 		start = flask.request.form['start']
+		end = flask.request.form['end']
 		# give back a json to jQuery to deal with updates to page
 		# put this return at end of function
-		return jsonify({'res': 'a', 'res2': 'b'})
-	#start = flask.request.args.get('starting_location')
-	#end = flask.request.args.get('ending_location')
 	print 'start is '+str(start)
 	print 'end is '+str(end)
 	# Use this to display the google maps transit directions in the background
@@ -54,12 +52,7 @@ def read_in_directions():
 
 	prediction = probability_of_bunching(df_next_bus_pair)
 
-	jsonify(results = 
-	return render_template('output.html', \
-			starting_loc = start, ending_loc = end, transit_url = transit_url, \
-			route_1 = route_1, \
-			expected_arrival_1 = expected_arrival_1, \
-			expected_arrival_2 = expected_arrival_2, \
-			position1 = position1, \
-			position2 = position2, \
-			prediction = prediction)
+	print 'prediction is '+str(prediction)
+
+	# Return this information to the javascript in 'input.html' to update the page via AJAX
+	return jsonify({'starting_loc': start, 'ending_loc': end, 'transit_url': transit_url, 'route_1': route_1, 'expected_arrival_1': expected_arrival_1, 'expected_arrival_2': expected_arrival_2, 'prediction': prediction, 'position1': position1, 'position2': position2})

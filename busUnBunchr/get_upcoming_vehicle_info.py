@@ -68,6 +68,9 @@ def subsequent_bus_info(starting_loc, ending_loc):
 	# (or maybe 'routes, figure that out)
 	# Do that last
 	steps = data['routes'][0]['legs'][0]['steps']
+	if steps is None:
+		df_empty = pd.DataFrame()
+		return df_empty
 	for i, step in enumerate(steps):
 		if step['travel_mode'] == 'TRANSIT':
 			transit_step = i

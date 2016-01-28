@@ -26,12 +26,15 @@ def read_in_directions():
 	print 'start is '+str(start)
 	print 'end is '+str(end)
 	# Use this to display the google maps transit directions in the background
-	transit_url='https://www.google.com/maps/embed/v1/directions?key=AIzaSyDWQv6WWQptI-6rjbavkoZ1TpVZhHKOm4w&origin='+str(start)+'&destination='+str(end)+'&mode=transit'
+	transit_url='https://www.google.com/maps/embed/v1/directions?key=AIzaSyDWQv6WWQptI-6rjbavkoZ1TpVZhHKOm4w&origin='+str(start).replace(' ','+')+'&destination='+str(end).replace(' ','+')+'&mode=transit'
 
 	print 'transit_url is:\n'+transit_url
 
 	# Get dataframe of next bus info 
 	df_next_bus_pair = subsequent_bus_info(str(start), str(end))
+	if df_next_bus_pair.empty:
+		print 'There does not seem to be any information for this route. Try again?'
+
 	print df_next_bus_pair.head()
 	#tmp = get_googlemaps_json('51 Blair Terrace', '24th St BART Station')
 
@@ -53,6 +56,11 @@ def read_in_directions():
 	prediction = probability_of_bunching(df_next_bus_pair)
 
 	print 'prediction is '+str(prediction)
+	panel_1 = render_template('panel.html',route_1=route_1, prediction=prediction, arrival_time_1=expected_arrival_1, arrival_time_2=expected_arrival_2)
+
+	print 'testing panel: \n'+str(panel_1)
 
 	# Return this information to the javascript in 'input.html' to update the page via AJAX
-	return jsonify({'starting_loc': start, 'ending_loc': end, 'transit_url': transit_url, 'route_1': route_1, 'expected_arrival_1': expected_arrival_1, 'expected_arrival_2': expected_arrival_2, 'prediction': prediction, 'position1': position1, 'position2': position2})
+	return jsonify({'starting_loc': start, 'ending_loc': end, 'transit_url': transit_url, 'route_1': route_1, \
+			'expected_arrival_1': expected_arrival_1, 'expected_arrival_2': expected_arrival_2, 'prediction': prediction, \
+			'position1': position1, 'position2': position2, 'panel_1': panel_1})

@@ -160,18 +160,7 @@
 						$('#bunching_results').remove();
 						console.log("#bunching_results.length evaluated to true.");
 					}
-					// what to display based on prediction value
-					if(prediction > 0.75){
-						$('#directions_space').append("<div id='bunching_results' class='panel panel-default'><p>The next vehicle serving your stop is from the route "+route_1+".</p>","<p style='color: red;'>The next bus is likely (approximately "+prediction*100+"% chance) to have heavy passenger loads. If possible, take the subsequent bus.</p></div>");
-					}
-					else if(prediction > 0.5 && prediction <= 0.75){
-						$('#directions_space').append("<div id='bunching_results' class='container'><p>The next vehicle serving your stop is from the route "+route_1+".</p>");
-						$('#directions_space').append("<p style='color: orange;'>The next bus has a moderate probability (approximately"+prediction+"%chance) of being delayed by excessive passenger load. Consider taking the subsequent bus.</p></div>");
-					}
-					else{
-						$('#directions_space').append("<div id='bunching_results' class='container'><p>The next vehicle serving your stop is from the route "+route_1+".</p>");
-						$('#directions_space').append("<p style='color: green;'>This route is running smoothly.</p></div>");
-					}
+					$('#directions_space').append(data.directions_box_1)
 				}); // end of $.post call
 
 			calcRoute();

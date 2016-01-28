@@ -56,11 +56,11 @@ def read_in_directions():
 	prediction = probability_of_bunching(df_next_bus_pair)
 
 	print 'prediction is '+str(prediction)
-	panel_1 = render_template('panel.html',route_1=route_1, prediction=prediction, arrival_time_1=expected_arrival_1, arrival_time_2=expected_arrival_2)
+	directions_box_1 = render_template('directions_box.html',route_1=route_1, prediction=prediction, arrival_time_1=expected_arrival_1, arrival_time_2=expected_arrival_2)
 
-	print 'testing panel: \n'+str(panel_1)
+	print 'testing directions_box: \n'+str(directions_box_1)
 
 	# Return this information to the javascript in 'input.html' to update the page via AJAX
 	return jsonify({'starting_loc': start, 'ending_loc': end, 'transit_url': transit_url, 'route_1': route_1, \
 			'expected_arrival_1': expected_arrival_1, 'expected_arrival_2': expected_arrival_2, 'prediction': prediction, \
-			'position1': position1, 'position2': position2, 'panel_1': panel_1})
+			'position1': position1, 'position2': position2, 'directions_box_1': directions_box_1})

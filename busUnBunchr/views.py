@@ -27,6 +27,8 @@ def read_in_directions():
 	print 'end is '+str(end)
 	# Use this to display the google maps transit directions in the background
 	transit_url='https://www.google.com/maps/embed/v1/directions?key=AIzaSyDWQv6WWQptI-6rjbavkoZ1TpVZhHKOm4w&origin='+str(start).replace(' ','+')+'&destination='+str(end).replace(' ','+')+'&mode=transit'
+	# This url will link to the actual google maps and will be supplied 
+	google_maps_url='https://www.google.com/maps/dir/'+str(start).replace(' ','+')+'/'+str(end).replace(' ','+')
 
 	print 'transit_url is:\n'+transit_url
 
@@ -56,11 +58,13 @@ def read_in_directions():
 	prediction = probability_of_bunching(df_next_bus_pair)
 
 	print 'prediction is '+str(prediction)
-	directions_box_1 = render_template('directions_box.html',route_1=route_1, prediction=prediction, arrival_time_1=expected_arrival_1, arrival_time_2=expected_arrival_2)
+	directions_box_1 = render_template('directions_box.html',route_1=route_1, prediction=prediction, arrival_time_1=expected_arrival_1,
+			arrival_time_2=expected_arrival_2, google_maps_url=google_maps_url)
 
 	print 'testing directions_box: \n'+str(directions_box_1)
 
 	# Return this information to the javascript in 'input.html' to update the page via AJAX
 	return jsonify({'starting_loc': start, 'ending_loc': end, 'transit_url': transit_url, 'route_1': route_1, \
 			'expected_arrival_1': expected_arrival_1, 'expected_arrival_2': expected_arrival_2, 'prediction': prediction, \
-			'position1': position1, 'position2': position2, 'directions_box_1': directions_box_1})
+			'position1': position1, 'position2': position2, 'directions_box_1': directions_box_1, \
+			'google_maps_url': google_maps_url})

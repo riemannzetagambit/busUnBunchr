@@ -41,7 +41,7 @@ body {
     padding: 20px;
     /*color: #FFF;*/
     color: #000;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.7);
     border-radius: 5px;
 	/* to override some inherited command; janky */
 	position: relative;
@@ -56,13 +56,27 @@ body {
 	position: fixed;
 }
 
+#banner.container {
+	top: 0px;
+    width: 725px;
+	left: 50%;
+    padding: 5px;
+    /*color: #FFF;*/
+	position: center;
+}
+
+.container h1 {
+	padding: 0px;
+	margin: 0px;
+}
+
 .directions_box {
 	top-margin: 3px;
     width: 250px;
     margin: 20px;
     padding: 20px;
     color: #FFF;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.7);
     border-radius: 5px;
 }
 
@@ -90,4 +104,11 @@ input {
     color: #FFF;
     background-color: #282C30;
     border-color: #FFF;
+}
+#spinner {
+	width: 0px;
+	height: 0px;
+	top: 50%;
+	left: 50%;
+	position: fixed;
 }

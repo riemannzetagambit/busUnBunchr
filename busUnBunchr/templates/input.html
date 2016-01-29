@@ -15,13 +15,11 @@
     <link rel="icon" type="image/png" href="../static/images/binoculars.png">
     <link rel="stylesheet" href="../static/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../static/css/starter-template.css" />
-    <!-- <link rel="stylesheet" href="../static/css/leaflet.css" />
-    <link rel="stylesheet" href="../static/css/scenic.css" /> --!>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
 
   </head>
 
-  <body>
+  <body style="padding-top: 50px;">
 
 	<div id="googlemaps">
 	</div>
@@ -39,12 +37,11 @@
       </div>
     </nav>
 
-	<br><br>
 
+	<div class="container" id="banner">
+		<h1>Optimizing transit for the SF Muni system</h1>
+	</div>
 	<div class="container" id="directions_space">
-		<div class="container">
-			<h1>Optimizing transit for the SF Muni system</h1>
-		</div>
 		<div id="input_box" class="affix">
    			<input type="text" id="starting_location" name="starting_location" placeholder="Where are you starting?" autocomplete="off">
 			<br>
@@ -52,6 +49,8 @@
 			<br>
     	   	<button id="submit_info" class="btn btn-lg btn-primary">Get directions</button>
 		</div>
+		<div id="status"></div>
+		<div id="spinner"></div>
 	</div>
 
 
@@ -59,17 +58,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="../static/js/bootstrap.min.js"></script>
 
-    <!-- leaflet.js -->
-    <script src="../static/js/leaflet.js"></script>
-	<!-- 
-	<script src="../static/js/leaflet.markercluster.js"></script>
-	--!>
-
     <!-- spinner -->
-	<!--
     <script type="text/javascript" src="static/js/spin.min.js"></script>
-    <script type="text/javascript" src="static/js/leaflet.spin.js"></script>
-	--!>
 
     <!-- Google Maps API (for geocomplete) (note the 'sensor' argument is no longer required) -->
     <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
@@ -85,6 +75,7 @@
 	var directionsVisible = false;
 	var origin;
 	var destination;
+	var spinner = new Spinner().spin();
 
 	function initialize() {
 		directionsDisplay = new google.maps.DirectionsRenderer();
@@ -146,14 +137,22 @@
 			//$('#starting_location').val("hey");
 			//var starting_loc = $('#starting_location').val();
 			//var ending_loc = $('#ending_location').val();
+			// Make it SPIN
+			$("#spinner").append(spinner.el);
 
 			$.post('/app', {'start': origin, 'end': destination},
 				function(data){
+					spinner.stop();
 					console.log(data);
+					console.log("First position is: "+data.position1);
+					console.log("Second position is: "+data.position2);
 					var prediction = data.prediction;
 					console.log(prediction)
 					var route_1 = data.route_1;
 					console.log(route_1)
+
+					// add a little message that says if route was found
+					$('#').html(data.message)
 
 					// delete if the element exists so we reset the thing
 					if($('#bunching_results').length){

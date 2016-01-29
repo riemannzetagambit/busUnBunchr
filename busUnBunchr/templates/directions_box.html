@@ -1,14 +1,30 @@
 <div id="bunching_results" class="directions_box">
-	<p>Route: {{ route_1 }}</p>
-	<p>In {{ expected_arrival_1 }} minute(s).</p>
+	<div>
+	<span>
+		<img src="../static/images/muni_bus_64px_white.png" width="15" height="15" style="margin: 2px;"></img>
+	</span>
+	<span style="margin-right: 5px; width: 20%;">
+		<b>{{ route_1 }}</b>
+	</span>
+	</div>
+	<div style="width: 80%; margin-left: 0px;">
+	<span>
+		upcoming in	
+	</span>
+	<span>
+		<b>{{ arrival_time_1 }} min</b>
+	</span>
+	<br>
+	<span></span><span></span> <span>from this stop.</span>
+	</div>
 	{% if prediction > 0.75 %}
-		<p style="color: red;"><b>This bus is {{ prediction*100 }}% likely to be overloaded.</b></p>
-		<p style="color: red;"><b>Consider taking the subsequent bus, arriving in {{ arrival_time_2 }} minute(s).</b></p>
+		<p style="color: red;"><b>Very likely overloaded.</b></p>
 	{% elif prediction <= 0.75 and prediction > 0.5 %}
-		<p style="color: orange;"><b>This bus is  {{ prediction*100 }}% likely to be overloaded.</b></p>
-		<p style="color: orange;"><b>Consider taking the subsequent bus, arriving in {{ arrival_time_2 }} minute(s).</b></p>
+		<p style="color: orange;"><b>Likely overloaded.</b></p>
 	{% else %}
-		<p style="color: green;"><b>This route running smoothly.</b></p>
+		<p style="color: green;"><b>Usual loads.</b></p>
 	{% endif %}
+
+	<
 </div>
 

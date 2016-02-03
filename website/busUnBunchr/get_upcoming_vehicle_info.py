@@ -46,10 +46,13 @@ def haversine(lon1, lat1, lon2, lat2):
 # Compute the percentile score of two (lat,lon)s based upon distribution of distances for that route
 def compute_distance(route_num, lat1, lon1, lat2, lon2):
         tmp_dist = haversine(lat1,lon1,lat2,lon2)
-        #path_to_dist_distribution = '../../muni_route_distance_distributions/route_'+str(route_num)+'_distribution.npy'
+        return tmp_dist
+		# comment out if you only want dist
+        #path_to_dist_distribution = '../muni_route_distance_distributions/route_'+str(route_num)+'_distribution.npy'
         #route_dist_distribution = np.load(path_to_dist_distribution)
         #percentile_score = 1 - stats.percentileofscore(route_dist_distribution, tmp_dist)/100
-        return tmp_dist
+        #return percentile_score
+
 
 
 
@@ -168,17 +171,22 @@ def subsequent_bus_info(starting_loc, ending_loc):
 	# Merge the dataframes and compute the distance percentile score for each bus
 	bus_pair  = pd.merge(left=df1, right=df2)
 	bus_pair['dist'] = compute_distance(route_name, float(bus_pair['lat_x'][0]), float(bus_pair['lon_x'][0]), float(bus_pair['lat_y'][0]), float(bus_pair['lon_y'][0]))	
+	# if using dist_percentile
+	#bus_pair['dist_percentile'] = compute_distance(route_name, float(bus_pair['lat_x'][0]), float(bus_pair['lon_x'][0]), float(bus_pair['lat_y'][0]), float(bus_pair['lon_y'][0]))	
 	bus_pair['arrival_x'] = arrival_time_1
 	bus_pair['arrival_y'] = arrival_time_2
+
+	# one hot encode the columns
 
 	# Now we need to get the frequency at this time for this route
 	print 'route is ', bus_pair['route_x'][0]
 	print 'time is ', bus_pair['time'][0]
+	# include this only when running updated RF
 	bus_pair['freq'] = get_frequency_for_route(bus_pair['route_x'][0], bus_pair['time'][0])
 
 
 	# Necessary only for patsy
-	bus_pair['bunched'] = 0
+	#bus_pair['bunched'] = 0
 
 	# Return the dataframe (do processing in bunch_predictor.py)
 	return bus_pair

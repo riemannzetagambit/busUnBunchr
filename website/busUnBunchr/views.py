@@ -7,9 +7,17 @@ from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 import pandas as pd
 import psycopg2
+import pickle
 
 from bunch_predictor import probability_of_bunching
 from get_upcoming_vehicle_info import subsequent_bus_info
+
+# load up RF
+print 'opening saved rf'
+with open('busUnBunchr/rf_fit_2016_02_02.pkl','rb') as input:
+#with open('../rf_fit_2016_01_21.pkl','rb') as input:
+    forest = pickle.load(input)
+print 'rf loaded successfully'
 
 @app.route('/')
 @app.route('/index')
@@ -61,7 +69,7 @@ def read_in_directions():
 		print '(lat, lon) 1st bus: ('+str(position1[0])+','+str(position1[1])+')'
 		print '(lat, lon) 2nd bus: ('+str(position2[0])+','+str(position2[1])+')'
 	
-		prediction = probability_of_bunching(df_next_bus_pair)
+		prediction = probability_of_bunching(df_next_bus_pair, forest)
 	
 		print 'prediction is '+str(prediction)
 		directions_box_1 = render_template('directions_box.html',route_1=route_1, prediction=prediction, arrival_time_1=expected_arrival_1,

@@ -6,7 +6,7 @@ import patsy
 # Needed to load hardcoded RF result from disk
 import pickle
 
-def probability_of_bunching(bus_pair):
+def probability_of_bunching(bus_pair, forest):
 	# A formula from patsy/dmatrices so we can feed into our RF classifier
 	# Input format is expected for dataframe coming in from get_bus_info function
 	#formula_for_realtime = 'bunched ~ time.dt.hour + time.dt.minute + lat_x + lon_x + speed_x  + lat_y + lon_y + speed_y + dist_percentile'
@@ -34,12 +34,6 @@ def probability_of_bunching(bus_pair):
 	xtest.drop(['route_x'], inplace=True, axis=1)
 	xtest = xtest.head(1)
 	xtest = xtest.as_matrix()
-
-	print 'opening saved rf'
-	with open('../rf_fit_2016_02_02.pkl','rb') as input:
-	#with open('../rf_fit_2016_01_21.pkl','rb') as input:
-		forest = pickle.load(input)
-	print 'rf loaded successfully'
 
 	# for classifier
 	#prediction = forest.predict_proba(xtmp)[0]

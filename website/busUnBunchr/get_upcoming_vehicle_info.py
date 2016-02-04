@@ -182,7 +182,8 @@ def subsequent_bus_info(starting_loc, ending_loc):
 	print 'route is ', bus_pair['route_x'][0]
 	print 'time is ', bus_pair['time'][0]
 	# include this only when running updated RF
-	bus_pair['freq'] = get_frequency_for_route(bus_pair['route_x'][0], bus_pair['time'][0])
+	# Must subtract 8 hours from 'time', since that is actually UTC time
+	bus_pair['freq'] = get_frequency_for_route(bus_pair['route_x'][0], bus_pair['time'][0] - pd.Timedelta(hours=8))
 
 
 	# Necessary only for patsy

@@ -35,9 +35,11 @@ def probability_of_bunching(bus_pair):
 	xtest = xtest.head(1)
 	xtest = xtest.as_matrix()
 
+	print 'opening saved rf'
 	with open('../rf_fit_2016_02_02.pkl','rb') as input:
 	#with open('../rf_fit_2016_01_21.pkl','rb') as input:
 		forest = pickle.load(input)
+	print 'rf loaded successfully'
 
 	# for classifier
 	#prediction = forest.predict_proba(xtmp)[0]

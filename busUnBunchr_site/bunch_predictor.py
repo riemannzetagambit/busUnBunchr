@@ -24,7 +24,7 @@ def probability_of_bunching(bus_pair, forest):
 	xtest['minute'] = xtest.apply(lambda row: row['time'].minute, axis=1)
 	xtest.drop('time', inplace=True, axis=1)
 
-	list_of_muni_routes = np.load('list_of_muni_routes.npy')
+	list_of_muni_routes = np.load('busUnBunchr_site/list_of_muni_routes.npy')
 	for i, route in enumerate(list_of_muni_routes,1):
 	    df_tmp = pd.DataFrame({'route_x': route}, index=[i])
 	    xtest = pd.concat([xtest,df_tmp])

@@ -2,7 +2,8 @@ import flask
 from flask import render_template
 from flask import jsonify
 #from flask import request
-from busUnBunchr import app
+#from busUnBunchr import app
+from busUnBunchr_site import app
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 import pandas as pd
@@ -14,7 +15,7 @@ from get_upcoming_vehicle_info import subsequent_bus_info
 
 # load up RF
 print 'opening saved rf'
-with open('model/busUnBunchr/rf_fit_2016_02_02.pkl','rb') as input:
+with open('model/rf_fit_2016_02_02.pkl','rb') as input:
 #with open('../rf_fit_2016_01_21.pkl','rb') as input:
     forest = pickle.load(input)
 print 'rf loaded successfully'

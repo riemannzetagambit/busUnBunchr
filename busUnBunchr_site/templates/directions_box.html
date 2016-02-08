@@ -37,14 +37,34 @@
 	{% else %}
 	<div class="col-md-2"></div>
 	<div class="col-md-10">
-		<p style="color: green;"><b>Usual loads.</b></p>
+		<p style="color: lime;"><b>Usual loads.</b></p>
 	</div>
 	{% endif %}
 
-	<div class="text-center">More info</div>
+	<div class="text-center"><a id="toggle_more_info">More info</a></div>
 	<div id="more_info" style="display: none;">
-		<p>Testing the hidden feature</p>
-	</div>
+		{% if prediction > 0.75 %}
+		<p style="font-size: 13px;" class="text-center">
+			There is a {{ (prediction*100) | int }}% chance this vehicle is bunched; taking the next vehicle is advised.
+		</p>
+		{% elif prediction <= 0.75 and prediction > 0.5 %}
+		<p style="font-size: 13px;" class="text-center">
+			There is a {{ (prediction*100) | int }}% chance this vehicle is bunched; consider taking the next vehicle.
+		</p>
+		{% else %}
+		<p style="font-size: 13px;" class="text-center">
+			There is a {{ (prediction*100) | int }}% chance this vehicle is bunched; it is likely on its typical schedule.
+		</p>
+		{% endif %}
+		<br>
+		<!-- before we had height 150
+		<div id="bunching_histogram" style="height:150px; width:275px;"></div> --!>
+		<div id="bunching_histogram" style="height:0px; width:275px;"></div>
+		<p style="font-size: 13px;" class="text-center">
+			The next <b>{{ route_1 }}</b> is upcoming in	
+			<b>{{ arrival_time_2 }} min</b>
+		</p>
+		</div>
 	<br>
 	<p class="text-center" style="font-size: 12px;"><a href={{ google_maps_url }}>Directions on Google Maps</a> | <a href="https://www.sfmta.com/">SFMTA<a></p>
 </div>

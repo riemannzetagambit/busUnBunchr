@@ -12,10 +12,10 @@
 
     <title>BusUnBunchr- optimizing transit flow and commutes</title>
 
-    <link rel="icon" type="image/png" href="../static/images/binoculars.png">
     <link rel="stylesheet" href="../static/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../static/css/starter-template.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+ 	<link rel="stylesheet" href="../static/css/jquery.jqplot.css" />
 
   </head>
 
@@ -32,6 +32,8 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
 			<li><a href="http://www.slideshare.net/secret/yqOoEbJtIE6uwR">About</a></li> <!-- just link slides and GitHub in 'About' --!>
+			<li><a href="https://github.com/riemannzetagambit"><img src="../static/images/github_logo.png" width="15" height"15"></a></li> 
+			<li><a href="https://www.linkedin.com/in/davidcurtisstone"><img src="../static/images/linkedin_logo.png" width="15" height"15"></a></li> 
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -64,6 +66,11 @@
     <!-- Google Maps API (for geocomplete) (note the 'sensor' argument is no longer required) -->
     <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
     <script src="../static/js/jquery.geocomplete.min.js"></script>
+
+	<!-- JQuery Plot script for adding bar plot --!>
+	<script language="javascript" type="text/javascript" src="../static/js/jquery.jqplot.min.js"></script>
+	<script language="javascript" type="text/javascript" src="../static/js/jqplot.barRenderer.min.js"></script>
+	<script language="javascript" type="text/javascript" src="../static/js/jqplot.categoryAxisRenderer.min.js"></script>
 
 	<script type="text/javascript">
 
@@ -110,11 +117,12 @@
 		directionsVisible = true;
 	}
 	
-	function updateMode() {
-		if (directionsVisible) {
-			claclRoute();
-		}
-	}
+	//function updateMode() {
+	//	if (directionsVisible) {
+// M//ade a correction here
+	//		calcRoute();
+	//	}
+	//}
 	function reset() {
     	directionsDisplay.setMap(null);
     	directionsDisplay.setPanel(null);
@@ -154,6 +162,7 @@
 					console.log(prediction)
 					var route_1 = data.route_1;
 					console.log(route_1)
+					//var route_bunching_hist = data.bunching_hist;
 
 
 					// delete if the element exists so we reset the thing
@@ -162,6 +171,40 @@
 						console.log("#bunching_results.length evaluated to true.");
 					}
 					$('#directions_space').append(data.directions_box_1)
+
+					// make 'make_info' link clickable to show more info
+					$("a#toggle_more_info").click(function(){
+    					$("#more_info").toggle();
+						//var line1 = [['A',1],['B',2],['C',1]];
+						var line1 = [['Nissan', 4],['Porche', 6],['Acura', 2],['Aston Martin', 5],['Rolls Royce', 6]];
+						//console.log('Evaluating length of jqplot: '+$('#bunching_histogram').length);
+						//if($('#bunching_histogram').data('jqplot').length){
+						//	$('#bunching_histogram').data('jqplot').remove();
+						//	console.log('removed jqplot element.');
+						//}
+						console.log('bunching_histogram element length: '+$('#bunching_histogram_plot').length);
+						// Put this back in later when I can make the graphs work
+						//if(!$('#bunching_histogram_plot').length){
+						//	console.log('Length of bunching_histogram was zero.');
+						//	//original (h,w) : (150, 275)
+						//	$('#bunching_histogram').append('<div id="bunching_histogram_plot" style="height:150px; width:275px;"></div>');
+						//	$('#bunching_histogram_plot').jqplot('chart',[line1], {
+						//		title:'Chart',
+						//		seriesDefaults:{
+						//			renderer:$.jqplot.BarRenderer
+						//		},
+						//		axes:{
+						//			xaxis:{
+						//				renderer: $.jqplot.CategoryAxisRenderer
+						//				}
+						//			}
+						//	}); // end of jqplot call
+						//} // end if statement
+						//else {
+						//	console.log('in else');
+						//}
+  					}); // end of click 'more_info' call
+
 				}); // end of $.post call
 
 			calcRoute();

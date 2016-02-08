@@ -7,6 +7,7 @@ from busUnBunchr_site import app
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 import pandas as pd
+import numpy as np
 import psycopg2
 import pickle
 
@@ -52,8 +53,16 @@ def read_in_directions():
 		print df_next_bus_pair.head()
 		#tmp = get_googlemaps_json('51 Blair Terrace', '24th St BART Station')
 	
+		# Get route we are looking at
 		route_1 = df_next_bus_pair['route_x'][0]
+
+		# Get hist of bunching for route we are looking at
+		route_hist_to_load = 'busUnBunchr_site/muni_route_bunching_distributions/'+str(route_1)+'_distribution.npy'
+		route_bunching_hist = np.load(route_hist_to_load)
+		# jsonify this using json.dumps()
+		#route_bunching_hist_jsonified = json.dumps(route_bunching_hist)
 		
+		# Get arrival times
 		expected_arrival_1 = df_next_bus_pair['arrival_x'][0]
 		expected_arrival_2 = df_next_bus_pair['arrival_y'][0]
 	
@@ -83,3 +92,4 @@ def read_in_directions():
 				'expected_arrival_1': expected_arrival_1, 'expected_arrival_2': expected_arrival_2, 'prediction': prediction, \
 				'position1': position1, 'position2': position2, 'directions_box_1': directions_box_1, \
 				'google_maps_url': google_maps_url, 'message': message, 'vehicle_type': vehicle_type})
+				#'google_maps_url': google_maps_url, 'message': message, 'vehicle_type': vehicle_type, 'bunching_hist': route_bunching_hist_jsonified})

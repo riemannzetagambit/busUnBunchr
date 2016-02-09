@@ -16,7 +16,7 @@ from get_upcoming_vehicle_info import subsequent_bus_info
 
 # load up RF
 print 'opening saved rf'
-with open('model/rf_fit_2016_02_02.pkl','rb') as input:
+with open('model/rf_fit_2016_02_05.pkl','rb') as input:
 #with open('../rf_fit_2016_01_21.pkl','rb') as input:
     forest = pickle.load(input)
 print 'rf loaded successfully'

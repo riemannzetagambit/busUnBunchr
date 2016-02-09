@@ -24,12 +24,12 @@
 	<br>
 	<span></span><span></span> <span>from {{ stop_name }}.</span>
 	</div>
-	{% if prediction > 0.75 %}
+	{% if prediction > 0.85 %}
 	<div class="col-md-2"></div>
 	<div class="col-md-10">
 		<p style="color: red;"><b>Very likely overloaded.</b></p>
 	</div>
-	{% elif prediction <= 0.75 and prediction > 0.5 %}
+	{% elif prediction <= 0.85 and prediction > 0.55 %}
 	<div class="col-md-2"></div>
 	<div class="col-md-10">
 		<p style="color: orange;"><b>Likely overloaded.</b></p>
@@ -43,11 +43,11 @@
 
 	<div class="text-center"><a id="toggle_more_info">More info</a></div>
 	<div id="more_info" style="display: none;">
-		{% if prediction > 0.75 %}
+		{% if prediction > 0.85 %}
 		<p style="font-size: 13px;" class="text-center">
 			There is a {{ (prediction*100) | int }}% chance this vehicle is bunched; taking the next vehicle is advised.
 		</p>
-		{% elif prediction <= 0.75 and prediction > 0.5 %}
+		{% elif prediction <= 0.85 and prediction > 0.55 %}
 		<p style="font-size: 13px;" class="text-center">
 			There is a {{ (prediction*100) | int }}% chance this vehicle is bunched; consider taking the next vehicle.
 		</p>

@@ -72,9 +72,9 @@ def subsequent_bus_info(starting_loc, ending_loc):
 	# To look at the other transit options, you can iterate over the 'legs' key 
 	# (or maybe 'routes, figure that out)
 	# Do that last
-	steps = data['routes'][0]['legs'][0]['steps']
 	try:
-		steps
+		steps = data['routes'][0]['legs'][0]['steps']
+#		steps
 	except:
 		df_empty = pd.DataFrame()
 		print 'steps was none!'

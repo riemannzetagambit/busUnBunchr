@@ -16,7 +16,7 @@ from get_upcoming_vehicle_info import subsequent_bus_info
 
 # load up RF
 print 'opening saved rf'
-with open('model/rf_fit_2016_02_05.pkl','rb') as input:
+with open('/home/ec2-user/busUnBunchr/busUnBunchr_site/model/rf_fit_2016_02_05.pkl','rb') as input:
 #with open('../rf_fit_2016_01_21.pkl','rb') as input:
     forest = pickle.load(input)
 print 'rf loaded successfully'
@@ -57,8 +57,8 @@ def read_in_directions():
 		route_1 = df_next_bus_pair['route_x'][0]
 
 		# Get hist of bunching for route we are looking at
-		route_hist_to_load = 'busUnBunchr_site/muni_route_bunching_distributions/'+str(route_1)+'_distribution.npy'
-		route_bunching_hist = np.load(route_hist_to_load)
+		#route_hist_to_load = 'busUnBunchr_site/muni_route_bunching_distributions/'+str(route_1)+'_distribution.npy'
+		#route_bunching_hist = np.load(route_hist_to_load)
 		# jsonify this using json.dumps()
 		#route_bunching_hist_jsonified = json.dumps(route_bunching_hist)
 		

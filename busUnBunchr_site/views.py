@@ -6,6 +6,7 @@ from flask import jsonify
 from busUnBunchr_site import app
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
+from scipy import stats
 import pandas as pd
 import numpy as np
 import psycopg2
@@ -16,7 +17,10 @@ from get_upcoming_vehicle_info import subsequent_bus_info
 
 # load up RF
 print 'opening saved rf'
-with open('/home/ec2-user/busUnBunchr/busUnBunchr_site/model/rf_fit_2016_02_05.pkl','rb') as input:
+# for AWS machine
+#with open('/home/ec2-user/busUnBunchr/busUnBunchr_site/model/rf_fit_2016_02_05.pkl','rb') as input:
+# for local machine
+with open('/Users/dstone/Dropbox/insight/project/model/rf_fit_2016_02_05.pkl','rb') as input:
 #with open('../rf_fit_2016_01_21.pkl','rb') as input:
     forest = pickle.load(input)
 print 'rf loaded successfully'
@@ -82,8 +86,15 @@ def read_in_directions():
 		prediction = probability_of_bunching(df_next_bus_pair, forest)
 	
 		print 'prediction is '+str(prediction)
-		directions_box_1 = render_template('directions_box.html',route_1=route_1, prediction=prediction, arrival_time_1=expected_arrival_1,
-				arrival_time_2=expected_arrival_2, google_maps_url=google_maps_url, stop_name=stop_name, vehicle_type=vehicle_type)
+
+		route_raw_to_load = 'busUnBunchr_site/muni_route_bunching_distributions/'+str(route_1)+'_raw_counts.npy'
+		route_bunching_raw = np.load(route_raw_to_load)
+		percentile_for_route = int(stats.percentileofscore(route_bunching_raw, prediction))
+		print 'percentile for route is '+str(percentile_for_route)
+
+		directions_box_1 = render_template('directions_box.html',route_1=route_1, prediction=prediction, percentile=percentile_for_route, \
+				arrival_time_1=expected_arrival_1, arrival_time_2=expected_arrival_2, google_maps_url=google_maps_url, \
+				stop_name=stop_name, vehicle_type=vehicle_type)
 	
 		print 'testing directions_box: \n'+str(directions_box_1)
 	
@@ -91,5 +102,5 @@ def read_in_directions():
 		return jsonify({'starting_loc': start, 'ending_loc': end, 'transit_url': transit_url, 'route_1': route_1, \
 				'expected_arrival_1': expected_arrival_1, 'expected_arrival_2': expected_arrival_2, 'prediction': prediction, \
 				'position1': position1, 'position2': position2, 'directions_box_1': directions_box_1, \
-				'google_maps_url': google_maps_url, 'message': message, 'vehicle_type': vehicle_type})
+				'google_maps_url': google_maps_url, 'message': message, 'vehicle_type': vehicle_type, 'percentile': percentile_for_route})
 				#'google_maps_url': google_maps_url, 'message': message, 'vehicle_type': vehicle_type, 'bunching_hist': route_bunching_hist_jsonified})

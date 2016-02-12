@@ -45,15 +45,18 @@
 	<div id="more_info" style="display: none;">
 		{% if prediction > 0.85 %}
 		<p style="font-size: 13px;" class="text-center">
-			There is a {{ (prediction*100) | int }}% chance this vehicle is bunched; taking the next vehicle is advised.
+		<!-- There is a {{ (prediction*100) | int }}% chance this vehicle is bunched; taking the next vehicle is advised. --!>
+			This vehicle is more bunched than {{ percentile }}% of typical vehicles on this route; taking the next vehicle is advised.
 		</p>
 		{% elif prediction <= 0.85 and prediction > 0.55 %}
 		<p style="font-size: 13px;" class="text-center">
-			There is a {{ (prediction*100) | int }}% chance this vehicle is bunched; consider taking the next vehicle.
+		<!-- 	There is a {{ (prediction*100) | int }}% chance this vehicle is bunched; consider taking the next vehicle. --!>
+			This vehicle is more bunched than {{ percentile }}% of typical vehicles on this route; consider taking the next vehicle.
 		</p>
 		{% else %}
 		<p style="font-size: 13px;" class="text-center">
-			There is a {{ (prediction*100) | int }}% chance this vehicle is bunched; it is likely on its typical schedule.
+		<!-- There is a {{ (prediction*100) | int }}% chance this vehicle is bunched; it is likely on its typical schedule. --!>
+			This vehicle is more bunched than {{ percentile }}% of typical vehicles on this route; it is likely on its typical schedule.
 		</p>
 		{% endif %}
 		<br>

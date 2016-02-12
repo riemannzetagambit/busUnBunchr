@@ -30,9 +30,9 @@ body {
 	opacity: 1.0;
 }
 
-.container {
+/*.container {
 	width: fit-content;
-}
+}*/
 
 #input_box.affix {
     top-margin: 10px;

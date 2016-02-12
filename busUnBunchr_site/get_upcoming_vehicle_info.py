@@ -135,21 +135,25 @@ def subsequent_bus_info(starting_loc, ending_loc):
 	try:
 		vehicle_1 = vehicle_array[0]
 	except:
+		print 'vehicle_1 not located'
 		df_empty = pd.DataFrame()
 		return df_empty
 	try:
 		vehicle_2 = vehicle_array[1]
 	except:
+		print 'vehicle_2 not located'
 		df_empty = pd.DataFrame()
 		return df_empty
 	try:
 		arrival_time_1 = arrival_time_array[0]
 	except:
+		print 'arrival_time_1 not located'
 		df_empty = pd.DataFrame()
 		return df_empty
 	try:
 		arrival_time_2 = arrival_time_array[1]
 	except:
+		print 'arrival_time_2 not located'
 		df_empty = pd.DataFrame()
 		return df_empty
 
@@ -167,6 +171,19 @@ def subsequent_bus_info(starting_loc, ending_loc):
 					'vehicle_type': vehicle_type},index=[0])
 		elif v.attr.id == vehicle_2:
 			df2 = pd.DataFrame({'ind': 0,'lat_y': float(v.attr.lat), 'lon_y': float(v.attr.lon), 'speed_y': float(v.attr.speedKmHr)},index=[0])
+
+	try:
+		df1
+	except:
+		print 'first vehicle record not located'
+		df_empty = pd.DataFrame()
+		return df_empty
+	try:
+		df2
+	except:
+		print 'second vehicle record not located'
+		df_empty = pd.DataFrame()
+		return df_empty
 
 	# Merge the dataframes and compute the distance percentile score for each bus
 	bus_pair  = pd.merge(left=df1, right=df2)

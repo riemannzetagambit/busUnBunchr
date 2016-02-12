@@ -15,4 +15,9 @@ def get_frequency_for_route(pair_route, pair_time):
 	t0 = '1970-01-01 '+str(pair_time.hour)+':'+str(pair_time.minute)+':00'
 	# set to end of day, no messing around
 	t1 = '1970-01-01 23:59:00'
-	return freq_df.loc[t0:t1]['freq'][0]	
+	# some more error catching
+	try:
+		return freq_df.loc[t0:t1]['freq'][0]
+	except:
+		# return last frequency you found
+		return freq_df.iloc[-1]['freq']

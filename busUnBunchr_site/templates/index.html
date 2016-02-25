@@ -228,7 +228,12 @@
 					var route_1 = data.route_1;
 					console.log(route_1);
 					// must do this so plot isn't reading in text instead of an array
-					var route_hist = $.parseJSON(data.route_bunching_hist);
+					console.log('data.route_bunching_hist is: '+data.route_bunching_hist);
+					if(data.route_bunching_hist){
+						var route_hist = $.parseJSON(data.route_bunching_hist);
+					}
+					var append_data = $.parseJSON(data.append_data);
+					console.log('append_data is: '+append_data);
 
 
 					// delete if the element exists so we reset the thing
@@ -236,7 +241,9 @@
 						$('#bunching_results').remove();
 						console.log("#bunching_results.length evaluated to true.");
 					}
-					$('#directions_space').append(data.directions_box_1)
+					if(append_data === true){
+						$('#directions_space').append(data.directions_box_1);
+					}
 
 					// make 'make_info' link clickable to show more info
 					$("a#toggle_more_info").click(function(){

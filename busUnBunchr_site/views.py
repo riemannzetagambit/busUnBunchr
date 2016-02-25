@@ -49,12 +49,11 @@ def read_in_directions():
 					<br> <div class="text-center" style="font-size: 12px;"><a href='+str(google_maps_url)+'>Check Google Maps directly</a></div></div>'
 		print 'There does not seem to be any information for this route. Try again?'
 		# At least return the message
-		return jsonify({'message': message})
+		return jsonify({'message': message, 'append_data': False})
 	else:
 		message = '<div id="status_message" class="text-center" style="color: #FFF;"><br>Success! Realtime Muni data found for initial transit segment.</div>'
 
 		print df_next_bus_pair.head()
-		#tmp = get_googlemaps_json('51 Blair Terrace', '24th St BART Station')
 	
 		# Get route we are looking at
 		route_1 = df_next_bus_pair['route_x'][0]
@@ -89,8 +88,8 @@ def read_in_directions():
 		route_hist_to_load = 'busUnBunchr_site/muni_route_bunching_distributions/'+str(route_1)+'_distribution.npy'
 		# grab only counts, which is second column
 		route_bunching_hist = np.load(route_hist_to_load)[:,1].tolist()
-		# replace the bin in the array that corresponds to the current routes with a different
-		# color for highcharts
+		print 'loaded route_bunching_hist as: '+str(route_bunching_hist)
+		# replace the bin in the array that corresponds to the current routes with a different color for highcharts
 		# Multiplying the percentile by 10 gives a number 1-10, 
 		# flooring it gives 0-9, which we can index to bin position in array
 		bin_of_array = int(math.floor(float((float(percentile_for_route)/100.0)*10)))
@@ -100,7 +99,6 @@ def read_in_directions():
 		print 'temp_val is '+str(temp_val)
 		route_bunching_hist[bin_of_array] = {'y':temp_val, 'color': '#337ab7'}
 		#route_bunching_hist[bin_of_array] = {'y':temp_val, 'color': '#1971c4'}
-		# jsonify this using json.dumps()
 		route_bunching_hist_jsonified = json.dumps(route_bunching_hist)
 
 		directions_box_1 = render_template('directions_box.html',route_1=route_1, prediction=prediction, percentile=percentile_for_route, \
@@ -114,5 +112,4 @@ def read_in_directions():
 				'expected_arrival_1': expected_arrival_1, 'expected_arrival_2': expected_arrival_2, 'prediction': prediction, \
 				'position1': position1, 'position2': position2, 'directions_box_1': directions_box_1, \
 				'google_maps_url': google_maps_url, 'message': message, 'vehicle_type': vehicle_type, 'percentile': percentile_for_route, \
-				'route_bunching_hist': route_bunching_hist_jsonified})
-				#'google_maps_url': google_maps_url, 'message': message, 'vehicle_type': vehicle_type, 'percentile': percentile_for_route})
+				'route_bunching_hist': route_bunching_hist_jsonified, 'append_data': True})

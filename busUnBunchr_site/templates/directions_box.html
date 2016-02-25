@@ -59,16 +59,17 @@
 			This vehicle is more bunched than {{ percentile }}% of typical vehicles on this route; it is likely on its typical schedule.
 		</p>
 		{% endif %}
-		<br>
-		<!-- before we had height 150
-		<div id="bunching_histogram" style="height:150px; width:275px;"></div> --!>
-		<div id="bunching_histogram" style="height:0px; width:275px;"></div>
+		<p style="font-size: 13px;" class="text-center">
+		Bunching for this vehicle:
+		</p>
+		<!-- before we had height 150 --!>
+		<div id="bunching_histogram" style="height:150px; width:325px;"></div>
 		<p style="font-size: 13px;" class="text-center">
 			The next <b>{{ route_1 }}</b> is upcoming in	
 			<b>{{ arrival_time_2 }} min</b>
 		</p>
 		</div>
-	<br>
+		<br>
 	<p class="text-center" style="font-size: 12px;"><a href={{ google_maps_url }}>Directions on Google Maps</a> | <a href="https://www.sfmta.com/">SFMTA<a></p>
 </div>
 

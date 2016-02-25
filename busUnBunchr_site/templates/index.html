@@ -33,7 +33,7 @@
             	<span class="icon-bar"></span>
             	<span class="icon-bar"></span>
           	</button>
-			<a class="navbar-brand" href="#">BusUnBunchr</a>
+			<a class="navbar-brand" href="http://www.busunbunchr.xyz">BusUnBunchr</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -47,16 +47,11 @@
     </nav>
 
 
-<!--
-	<div class="container" id="banner">
-		<h1>Optimizing transit for the SF Muni system</h1>
-	</div>
---!>
 	<div class="container" id="directions_space">
 		<div id="input_box" class="affix">
-   			<input type="text" id="starting_location" name="starting_location" placeholder="Where are you starting?" autocomplete="off">
+   			<input type="text" id="starting_location" name="starting_location" placeholder="Where in SF are you starting?" autocomplete="off">
 			<br>
-   			<input type="text" id="ending_location" name="ending_location" placeholder="Where are you going?" autocomplete="off">
+   			<input type="text" id="ending_location" name="ending_location" placeholder="Where in SF are you going?" autocomplete="off">
 			<br>
     	   	<button id="submit_info" class="btn btn-lg btn-primary">Get directions</button>
 			<div id="status"></div>
@@ -76,11 +71,10 @@
     <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
     <script src="../static/js/jquery.geocomplete.min.js"></script>
 
-	<!-- JQuery Plot script for adding bar plot --!>
-	<script language="javascript" type="text/javascript" src="../static/js/jquery.jqplot.min.js"></script>
-	<script language="javascript" type="text/javascript" src="../static/js/jqplot.barRenderer.min.js"></script>
-	<script language="javascript" type="text/javascript" src="../static/js/jqplot.categoryAxisRenderer.min.js"></script>
-
+	<!-- Highcharts script for adding bar plot --!>
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	
 	<script type="text/javascript">
 
 	// This code taken in part from a comment here:
@@ -228,11 +222,13 @@
 					console.log(data);
 					console.log("First position is: "+data.position1);
 					console.log("Second position is: "+data.position2);
+					console.log("Got route hist: "+data.route_bunching_hist);
 					var prediction = data.prediction;
-					console.log(prediction)
+					console.log(prediction);
 					var route_1 = data.route_1;
-					console.log(route_1)
-					//var route_bunching_hist = data.bunching_hist;
+					console.log(route_1);
+					// must do this so plot isn't reading in text instead of an array
+					var route_hist = $.parseJSON(data.route_bunching_hist);
 
 
 					// delete if the element exists so we reset the thing
@@ -245,34 +241,68 @@
 					// make 'make_info' link clickable to show more info
 					$("a#toggle_more_info").click(function(){
     					$("#more_info").toggle();
-						//var line1 = [['A',1],['B',2],['C',1]];
-						var line1 = [['Nissan', 4],['Porche', 6],['Acura', 2],['Aston Martin', 5],['Rolls Royce', 6]];
-						//console.log('Evaluating length of jqplot: '+$('#bunching_histogram').length);
-						//if($('#bunching_histogram').data('jqplot').length){
-						//	$('#bunching_histogram').data('jqplot').remove();
-						//	console.log('removed jqplot element.');
-						//}
-						console.log('bunching_histogram element length: '+$('#bunching_histogram_plot').length);
-						// Put this back in later when I can make the graphs work
-						//if(!$('#bunching_histogram_plot').length){
-						//	console.log('Length of bunching_histogram was zero.');
-						//	//original (h,w) : (150, 275)
-						//	$('#bunching_histogram').append('<div id="bunching_histogram_plot" style="height:150px; width:275px;"></div>');
-						//	$('#bunching_histogram_plot').jqplot('chart',[line1], {
-						//		title:'Chart',
-						//		seriesDefaults:{
-						//			renderer:$.jqplot.BarRenderer
-						//		},
-						//		axes:{
-						//			xaxis:{
-						//				renderer: $.jqplot.CategoryAxisRenderer
-						//				}
-						//			}
-						//	}); // end of jqplot call
-						//} // end if statement
-						//else {
-						//	console.log('in else');
-						//}
+						// function to add highcharts plot
+						$(function () {
+						    $('#bunching_histogram').highcharts({
+						        chart: {
+						            type: 'column',
+									// color from my CSS file
+									backgroundColor: 'transparent'
+						        },
+						        title: {
+						            text: ''
+						        },
+								legend: {
+        						    enabled: false
+        						},
+        						xAxis: {
+        						    categories: [
+        						        'Spaced',
+        						        '',
+        						        '',
+        						        '',
+        						        'Normal',
+        						        '',
+        						        '',
+        						        '',
+        						        'Bunched'
+        						    ],
+        						    tickInterval: 4,
+        						    labels: {
+        						    	rotation: 0,
+										style: {
+											color: '#F3F3F3'
+										}	
+        						    }
+        						},
+						        yAxis: {
+									gridLineWidth: 0,
+						            min: 0,
+									labels: {
+										enabled: false
+									},
+						            title: {
+						                text: ''
+						            }
+						        },
+						        plotOptions: {
+						            column: {
+						                pointPadding: -0.25,
+						                borderWidth: 0
+						            }
+						        },
+						        series: [{
+						            name: 'Value',
+						            //data: data.route_bunching_hist
+									data: route_hist
+						
+								}],
+								// don't put that button on it
+								exporting: {enabled: false},
+								// don't use mouse-over labels
+								tooltip: {enabled: false}
+						    });
+						}); // end of function to add highcharts
   					}); // end of click 'more_info' call
 
 				}); // end of $.post call

@@ -9,8 +9,7 @@ from sqlalchemy_utils import database_exists, create_database
 from scipy import stats
 import pandas as pd
 import numpy as np
-import psycopg2
-import pickle
+import psycopg2, pickle, json, math
 
 from bunch_predictor import probability_of_bunching
 from get_upcoming_vehicle_info import subsequent_bus_info
@@ -59,12 +58,6 @@ def read_in_directions():
 	
 		# Get route we are looking at
 		route_1 = df_next_bus_pair['route_x'][0]
-
-		# Get hist of bunching for route we are looking at
-		#route_hist_to_load = 'busUnBunchr_site/muni_route_bunching_distributions/'+str(route_1)+'_distribution.npy'
-		#route_bunching_hist = np.load(route_hist_to_load)
-		# jsonify this using json.dumps()
-		#route_bunching_hist_jsonified = json.dumps(route_bunching_hist)
 		
 		# Get arrival times
 		expected_arrival_1 = df_next_bus_pair['arrival_x'][0]
@@ -92,6 +85,24 @@ def read_in_directions():
 		percentile_for_route = int(stats.percentileofscore(route_bunching_raw, prediction))
 		print 'percentile for route is '+str(percentile_for_route)
 
+		# Get hist of bunching for route we are looking at
+		route_hist_to_load = 'busUnBunchr_site/muni_route_bunching_distributions/'+str(route_1)+'_distribution.npy'
+		# grab only counts, which is second column
+		route_bunching_hist = np.load(route_hist_to_load)[:,1].tolist()
+		# replace the bin in the array that corresponds to the current routes with a different
+		# color for highcharts
+		# Multiplying the percentile by 10 gives a number 1-10, 
+		# flooring it gives 0-9, which we can index to bin position in array
+		bin_of_array = int(math.floor(float((float(percentile_for_route)/100.0)*10)))
+		print 'bin_of_array is '+str(bin_of_array)
+		print 'value at that bin is '+str(route_bunching_hist[bin_of_array] )
+		temp_val = route_bunching_hist[bin_of_array]
+		print 'temp_val is '+str(temp_val)
+		route_bunching_hist[bin_of_array] = {'y':temp_val, 'color': '#337ab7'}
+		#route_bunching_hist[bin_of_array] = {'y':temp_val, 'color': '#1971c4'}
+		# jsonify this using json.dumps()
+		route_bunching_hist_jsonified = json.dumps(route_bunching_hist)
+
 		directions_box_1 = render_template('directions_box.html',route_1=route_1, prediction=prediction, percentile=percentile_for_route, \
 				arrival_time_1=expected_arrival_1, arrival_time_2=expected_arrival_2, google_maps_url=google_maps_url, \
 				stop_name=stop_name, vehicle_type=vehicle_type)
@@ -102,5 +113,6 @@ def read_in_directions():
 		return jsonify({'starting_loc': start, 'ending_loc': end, 'transit_url': transit_url, 'route_1': route_1, \
 				'expected_arrival_1': expected_arrival_1, 'expected_arrival_2': expected_arrival_2, 'prediction': prediction, \
 				'position1': position1, 'position2': position2, 'directions_box_1': directions_box_1, \
-				'google_maps_url': google_maps_url, 'message': message, 'vehicle_type': vehicle_type, 'percentile': percentile_for_route})
-				#'google_maps_url': google_maps_url, 'message': message, 'vehicle_type': vehicle_type, 'bunching_hist': route_bunching_hist_jsonified})
+				'google_maps_url': google_maps_url, 'message': message, 'vehicle_type': vehicle_type, 'percentile': percentile_for_route, \
+				'route_bunching_hist': route_bunching_hist_jsonified})
+				#'google_maps_url': google_maps_url, 'message': message, 'vehicle_type': vehicle_type, 'percentile': percentile_for_route})

@@ -1,0 +1,25 @@
+
+.DS_Store
+.ipynb_checkpoints/
+Interview_prep.ipynb
+Simple neural network example.ipynb
+backup_scripts/
+busUnBunchr_site/.DS_Store
+busUnBunchr_site/__init__.pyc
+busUnBunchr_site/bunch_predictor.pyc
+busUnBunchr_site/get_frequency_for_route.pyc
+busUnBunchr_site/get_upcoming_vehicle_info.pyc
+busUnBunchr_site/images-from-scenicstroll/
+busUnBunchr_site/nohup.out
+busUnBunchr_site/static/.DS_Store
+busUnBunchr_site/views.pyc
+demo_day_presentation/
+deprecated_notebooks_and_scripts/.ipynb_checkpoints/
+deprecated_notebooks_and_scripts/Untitled.ipynb
+deprecated_notebooks_and_scripts/callNextBusAPI.py
+deprecated_notebooks_and_scripts/get_upcoming_vehicle_and_get_frequency_for_route_JUPYTER.ipynb
+deprecated_notebooks_and_scripts/nextbus_database_generation.ipynb
+deprecated_notebooks_and_scripts/nextbus_googlemaps_api.ipynb
+distribution_in_bunching_parameters.png
+model/
+nohup.out

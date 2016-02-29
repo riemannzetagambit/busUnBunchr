@@ -23,3 +23,5 @@ deprecated_notebooks_and_scripts/nextbus_googlemaps_api.ipynb
 distribution_in_bunching_parameters.png
 model/
 nohup.out
+nextbus_pull_from_remote_database.ipynb
+run.py

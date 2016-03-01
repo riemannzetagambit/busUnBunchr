@@ -13,7 +13,9 @@ busUnBunchr_site/images-from-scenicstroll/
 busUnBunchr_site/nohup.out
 busUnBunchr_site/static/.DS_Store
 busUnBunchr_site/views.pyc
+busUnBunchr_site/views.py
 demo_day_presentation/
+deprecated_notebooks_and_scripts/
 deprecated_notebooks_and_scripts/.ipynb_checkpoints/
 deprecated_notebooks_and_scripts/Untitled.ipynb
 deprecated_notebooks_and_scripts/callNextBusAPI.py
